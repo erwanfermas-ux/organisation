@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mon Orga — Erwan</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,sans-serif;background:#f8fafc;min-height:100vh;color:#0f172a}
+.app{max-width:700px;margin:0 auto;padding:16px}
+
+/* ── Header ── */
+.hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px}
+.hdr h1{font-size:21px;font-weight:700}
+.hdr p{font-size:12px;color:#64748b;margin-top:2px}
+.stats{display:flex;gap:8px}
+.stat{border-radius:10px;padding:7px 14px;text-align:center}
+.stat-n{font-size:21px;font-weight:700;line-height:1}
+.stat-l{font-size:10px;font-weight:600;margin-top:2px}
+.sr{background:#fef2f2;border:1px solid #fecaca}.sr .stat-n,.sr .stat-l{color:#ef4444}
+.sg{background:#f0fdf4;border:1px solid #bbf7d0}.sg .stat-n,.sg .stat-l{color:#16a34a}
+
+/* ── Tabs ── */
+.tabs{display:flex;background:#f1f5f9;border-radius:12px;padding:3px;margin-bottom:16px;gap:3px;flex-wrap:wrap}
+.tab{flex:1;min-width:80px;padding:9px 6px;border:none;border-radius:10px;font-weight:700;font-size:12px;cursor:pointer;background:transparent;color:#94a3b8;transition:all .15s;white-space:nowrap;text-align:center}
+.tab.on{background:white;color:#0f172a;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+
+/* ── Inputs communs ── */
+input,select,textarea{font-family:inherit;font-size:13px;padding:8px 11px;border-radius:8px;border:1px solid #e2e8f0;background:white;color:#0f172a;outline:none;width:100%}
+input:focus,select:focus{border-color:#94a3b8}
+.row2{display:flex;gap:7px;margin-bottom:7px}
+.row2 input,.row2 select{margin:0}
+.srow{display:flex;gap:8px;margin-bottom:10px}
+.srow input{flex:1}
+
+/* ── Boutons ── */
+.btn-dark{background:#0f172a;color:white;border:none;border-radius:10px;padding:9px 16px;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap}
+.btn-ok{flex:1;background:#0f172a;color:white;border:none;border-radius:8px;padding:9px;font-weight:700;cursor:pointer;font-size:13px}
+.btn-ok-y{flex:1;background:#d97706;color:white;border:none;border-radius:8px;padding:9px;font-weight:700;cursor:pointer;font-size:13px}
+.btn-ok-g{flex:1;background:#16a34a;color:white;border:none;border-radius:8px;padding:9px;font-weight:700;cursor:pointer;font-size:13px}
+.btn-no{background:#f1f5f9;border:none;border-radius:8px;padding:9px 14px;cursor:pointer;color:#64748b;font-size:13px}
+.fbtn{display:flex;gap:7px;margin-top:6px}
+
+/* ── Formulaires ── */
+.form-card{background:white;border-radius:12px;padding:14px;margin-bottom:10px;border:2px solid #0f172a;display:none}
+.form-card.on{display:block}
+.form-card input,.form-card select{margin-bottom:7px}
+
+/* ── Tâches ── */
+.tlist{display:flex;flex-direction:column;gap:6px}
+.titem{background:white;border-radius:11px;padding:11px 13px;border:1px solid #f1f5f9;border-left:4px solid #ccc;transition:opacity .2s}
+.titem.done{opacity:.45;background:#f8fafc}
+.tinner{display:flex;align-items:flex-start;gap:10px}
+.chk{width:20px;height:20px;border-radius:50%;border:2px solid #ccc;background:transparent;cursor:pointer;flex-shrink:0;margin-top:2px;font-size:11px;display:flex;align-items:center;justify-content:center;color:white}
+.tbody{flex:1;min-width:0}
+.ttitle{font-weight:600;font-size:13.5px;margin-bottom:4px}
+.titem.done .ttitle{text-decoration:line-through;color:#94a3b8;font-weight:400}
+.tagrow{display:flex;gap:4px;flex-wrap:wrap}
+.tag{border-radius:20px;padding:1px 7px;font-size:11px;font-weight:600}
+.tnote{font-size:11px;color:#94a3b8;margin-top:3px}
+.xbtn{background:transparent;border:none;color:#e2e8f0;cursor:pointer;font-size:18px;padding:0 3px;line-height:1;flex-shrink:0}
+.xbtn:hover{color:#94a3b8}
+.sdone{display:block;width:100%;text-align:center;background:transparent;border:none;color:#94a3b8;font-size:12px;cursor:pointer;margin-top:8px;padding:6px}
+.tip{margin-top:14px;background:#fefce8;border-radius:10px;padding:9px 13px;font-size:12px;color:#92400e;border:1px solid #fef08a}
+
+/* ── Planning semaine ── */
+.wnav{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.wnav button{background:#f1f5f9;border:1px solid #e2e8f0;border-radius:8px;padding:6px 13px;cursor:pointer;font-size:14px;font-weight:700;color:#64748b}
+.wtitle{font-weight:700;font-size:14px}
+.wgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:14px}
+.wcol{display:flex;flex-direction:column;gap:3px}
+.wday-hdr{text-align:center;padding:6px 2px;border-radius:8px 8px 0 0}
+.wday-hdr.wtoday{background:#eff6ff}
+.wdn{font-size:10px;font-weight:600;color:#64748b;text-transform:uppercase}
+.wdd{font-size:15px;font-weight:700;color:#0f172a;margin-top:1px}
+.wday-hdr.wtoday .wdn,.wday-hdr.wtoday .wdd{color:#2563eb}
+.wslot{border-radius:5px;padding:4px 5px;font-size:10px;font-weight:600;cursor:pointer;min-height:26px;display:flex;align-items:center;gap:3px;border:none;width:100%;text-align:left;word-break:break-word;line-height:1.2}
+.wslot:hover{filter:brightness(.92)}
+.wadd{background:#f1f5f9;color:#94a3b8;border:1px dashed #e2e8f0;justify-content:center;font-size:13px}
+.wadd:hover{background:white;color:#64748b}
+.legend{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.leg{display:flex;align-items:center;gap:5px;font-size:11px;color:#64748b}
+.legdot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.smodal{background:white;border-radius:12px;padding:14px;margin-bottom:12px;border:2px solid #d97706;display:none}
+.smodal.on{display:block}
+.smodal input{margin-bottom:8px}
+.sgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px}
+.stbtn{border:1px solid #e2e8f0;border-radius:8px;padding:8px 4px;cursor:pointer;text-align:center;font-size:11px;font-weight:600;transition:all .1s}
+.stbtn.on{border-width:2px}
+
+/* ── Agenda ── */
+.mcal{background:white;border-radius:14px;padding:16px;margin-bottom:12px;border:1px solid #f1f5f9}
+.mnav{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.mnav button{background:#f1f5f9;border:1px solid #e2e8f0;border-radius:8px;padding:6px 13px;cursor:pointer;font-size:14px;font-weight:700;color:#64748b}
+.mtitle{font-weight:700;font-size:16px}
+.mgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.mdh{text-align:center;font-size:10px;color:#94a3b8;font-weight:600;padding:2px 0;margin-bottom:4px}
+.mday{background:transparent;border:1px solid transparent;border-radius:9px;padding:5px 2px;cursor:pointer;text-align:center;min-height:42px;transition:all .1s}
+.mday:hover{background:#f1f5f9}
+.mday.mtoday{background:#eff6ff;border-color:#bfdbfe}
+.mday.msel{background:#0f172a;border-color:transparent}
+.mdn{font-size:12px;color:#374151}
+.mday.mtoday .mdn{color:#2563eb;font-weight:700}
+.mday.msel .mdn{color:white;font-weight:700}
+.mdots{display:flex;justify-content:center;gap:2px;margin-top:2px;flex-wrap:wrap}
+.mdot{width:5px;height:5px;border-radius:50%}
+.mday.msel .mdot{background:rgba(255,255,255,.6)!important}
+.dpanel{background:white;border-radius:12px;padding:14px;margin-bottom:12px;border:1px solid #f1f5f9}
+.dphdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.dptitle{font-weight:700;font-size:14px}
+.addev{background:#d97706;color:white;border:none;border-radius:8px;padding:5px 11px;font-size:12px;font-weight:700;cursor:pointer}
+.evitem{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:9px;margin-bottom:6px}
+.evbar{width:3px;border-radius:3px;flex-shrink:0;align-self:stretch}
+.evtitle{font-weight:600;font-size:13px}
+.evnote{font-size:11px;color:#64748b;margin-top:1px}
+.evform{background:white;border-radius:12px;padding:14px;margin-bottom:12px;border:2px solid #d97706;display:none}
+.evform.on{display:block}
+.evform input,.evform select{margin-bottom:7px}
+.evform .row2 input,.evform .row2 select{margin:0}
+.upcoming{background:white;border-radius:12px;padding:14px;border:1px solid #f1f5f9}
+.uptitle{font-weight:700;font-size:14px;margin-bottom:10px}
+.uitem{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #f8fafc}
+.uitem:last-child{border:none}
+.udate{border-radius:9px;padding:5px 8px;text-align:center;min-width:42px;flex-shrink:0}
+.udd{font-size:15px;font-weight:700;line-height:1}
+.umm{font-size:9px;font-weight:700;text-transform:uppercase;margin-top:1px}
+.ubody{flex:1;min-width:0}
+.utitle{font-weight:600;font-size:13px}
+.unote{font-size:11px;color:#94a3b8;margin-top:1px}
+.ujj{font-size:11px;font-weight:700;white-space:nowrap}
+.addevfoot{width:100%;margin-top:10px;background:#f8fafc;border:1px dashed #e2e8f0;border-radius:9px;padding:8px;color:#94a3b8;font-size:12px;cursor:pointer}
+.empty{text-align:center;padding:32px;color:#94a3b8;font-size:13px}
+
+/* ── Éditeur ── */
+.editor-wrap{background:white;border-radius:12px;padding:14px;border:1px solid #f1f5f9;margin-bottom:12px}
+.editor-wrap h3{font-size:14px;font-weight:700;margin-bottom:10px;color:#0f172a}
+.editor-tabs{display:flex;gap:5px;margin-bottom:12px;flex-wrap:wrap}
+.etab{border:1px solid #e2e8f0;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;background:#f8fafc;color:#64748b}
+.etab.on{background:#0f172a;color:white;border-color:#0f172a}
+.elist{display:flex;flex-direction:column;gap:6px;max-height:320px;overflow-y:auto}
+.eitem{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;background:#f8fafc;border:1px solid #f1f5f9}
+.eitem input,.eitem select{flex:1;font-size:12px;padding:5px 8px;border-radius:6px;border:1px solid #e2e8f0}
+.esave{background:#16a34a;color:white;border:none;border-radius:6px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap}
+.edel{background:transparent;border:none;color:#e2e8f0;cursor:pointer;font-size:16px;flex-shrink:0}
+.edel:hover{color:#ef4444}
+.enew-row{display:flex;gap:7px;margin-top:8px;flex-wrap:wrap}
+.enew-row input,.enew-row select{flex:1;min-width:100px}
+.ecat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;max-height:280px;overflow-y:auto}
+.ecatitem{display:flex;align-items:center;gap:6px;padding:8px;border-radius:8px;border:1px solid #f1f5f9;background:#f8fafc}
+.ecatitem input{flex:1;font-size:12px;padding:4px 7px}
+.ecol{width:14px;height:14px;border-radius:4px;flex-shrink:0;cursor:pointer;border:2px solid rgba(0,0,0,.1)}
+.einfo{font-size:11px;color:#94a3b8;margin-bottom:8px}
+
+/* ════════════════════════════════
+   COMPTABILITÉ — DARK THEME
+   ════════════════════════════════ */
+#tab-compta{
+  --bg:#0d0f14;--surface:#14171f;--surface2:#1c2030;--cborder:#262c3d;
+  --accent:#4fffb0;--accent2:#ff6b6b;--accent3:#ffd166;--accent4:#4da6ff;
+  --ctext:#e8ecf5;--muted:#6b7591;
+  --mono:'DM Mono',monospace;
+  background:var(--bg);border-radius:16px;padding:20px;margin-top:4px;
+  color:var(--ctext);position:relative;overflow:hidden;
+}
+#tab-compta::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(79,255,176,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(79,255,176,.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
+#tab-compta > *{position:relative;z-index:1}
+.c-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:24px;padding-bottom:18px;border-bottom:1px solid var(--cborder)}
+.c-logo h2{font-size:22px;font-weight:800;letter-spacing:-1px;color:var(--ctext)}
+.c-logo h2 span{color:var(--accent)}
+.c-logo p{font-size:11px;color:var(--muted);font-family:var(--mono);margin-top:4px}
+.c-year{background:var(--accent);color:#000;font-family:var(--mono);font-weight:600;font-size:13px;padding:6px 14px;border-radius:4px}
+.kpi-row{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px}
+@media(min-width:500px){.kpi-row{grid-template-columns:repeat(4,1fr)}}
+.ckpi{background:var(--surface);border:1px solid var(--cborder);border-radius:12px;padding:14px;position:relative;overflow:hidden}
+.ckpi::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px}
+.ckpi.green::after{background:var(--accent)}.ckpi.red::after{background:var(--accent2)}.ckpi.yellow::after{background:var(--accent3)}.ckpi.blue::after{background:var(--accent4)}
+.ckpi-label{font-size:10px;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.ckpi-value{font-size:20px;font-weight:700;font-family:var(--mono)}
+.ckpi.green .ckpi-value{color:var(--accent)}.ckpi.red .ckpi-value{color:var(--accent2)}.ckpi.yellow .ckpi-value{color:var(--accent3)}.ckpi.blue .ckpi-value{color:var(--accent4)}
+.ckpi-sub{font-size:10px;color:var(--muted);margin-top:3px;font-family:var(--mono)}
+.ctabs{display:flex;gap:4px;margin-bottom:18px;background:var(--surface);border:1px solid var(--cborder);border-radius:10px;padding:4px;flex-wrap:wrap}
+.ctab{flex:1;min-width:80px;padding:9px 8px;background:transparent;border:none;border-radius:7px;color:var(--muted);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;text-align:center}
+.ctab.active{background:var(--surface2);color:var(--ctext);border:1px solid var(--cborder)}
+.cpanel{display:none}.cpanel.active{display:block}
+.ccard{background:var(--surface);border:1px solid var(--cborder);border-radius:14px;padding:18px;margin-bottom:18px}
+.ccard h3{font-size:12px;font-weight:700;margin-bottom:14px;color:var(--accent);font-family:var(--mono);text-transform:uppercase;letter-spacing:1px}
+.cfield{display:flex;flex-direction:column;gap:5px;margin-bottom:10px}
+.cfield label{font-size:10px;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.8px}
+.cfield input,.cfield select{background:var(--bg);border:1px solid var(--cborder);border-radius:8px;padding:9px 11px;color:var(--ctext);font-family:var(--mono);font-size:12px;outline:none;transition:border-color .2s;width:100%}
+.cfield input:focus,.cfield select:focus{border-color:var(--accent)}
+select.cdark option{background:#0d0f14}
+.crow2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.crow3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px}
+.crow4{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:10px;margin-bottom:10px}
+@media(max-width:500px){.crow2,.crow3,.crow4{grid-template-columns:1fr}}
+.cbtn{padding:9px 18px;border-radius:8px;border:none;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s}
+.cbtn-primary{background:var(--accent);color:#000}
+.cbtn-primary:hover{background:#3de89d}
+.cbtn-sm{background:transparent;border:1px solid var(--accent2);color:var(--accent2);font-size:10px;padding:3px 8px;border-radius:5px;cursor:pointer;font-family:var(--mono)}
+.cbtn-sm:hover{background:var(--accent2);color:#000}
+.ctable-wrap{overflow-x:auto}
+.ctable-wrap table{width:100%;border-collapse:collapse;font-size:11px}
+.ctable-wrap thead th{text-align:left;padding:9px 10px;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);border-bottom:1px solid var(--cborder)}
+.ctable-wrap tbody tr{border-bottom:1px solid var(--cborder);transition:background .15s}
+.ctable-wrap tbody tr:hover{background:var(--surface2)}
+.ctable-wrap td{padding:9px 10px;font-family:var(--mono);font-size:11px;vertical-align:middle}
+.cpos{color:var(--accent);font-weight:600}.cneg{color:var(--accent2);font-weight:600}.cwarn{color:var(--accent3);font-weight:600}
+.cbadge{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-family:var(--mono);font-weight:500;white-space:nowrap}
+.b-cp{background:rgba(79,255,176,.15);color:var(--accent)}
+.b-ril{background:rgba(77,166,255,.15);color:var(--accent4)}
+.b-vir{background:rgba(200,200,200,.1);color:#aaa}
+.b-yellow{background:rgba(255,209,102,.12);color:var(--accent3)}
+.c-dep{background:rgba(255,209,102,.12);color:var(--accent3)}
+.c-cot{background:rgba(255,107,107,.12);color:var(--accent2)}
+.c-rep{background:rgba(79,255,176,.12);color:var(--accent)}
+.c-for{background:rgba(77,166,255,.12);color:var(--accent4)}
+.c-mat{background:rgba(200,130,255,.12);color:#c882ff}
+.c-tel{background:rgba(255,209,102,.1);color:#e8b84b}
+.c-doc{background:rgba(77,166,255,.1);color:#7ec8ff}
+.c-bnk{background:rgba(200,130,255,.1);color:#d4a0ff}
+.c-oth{background:rgba(160,160,160,.1);color:#aaa}
+.c-rcp{background:rgba(255,107,107,.1);color:#ff9b9b}
+.cinfo{border-radius:10px;padding:11px 14px;font-size:11px;color:var(--muted);line-height:1.7;font-family:var(--mono);margin-bottom:14px}
+.ib-green{background:rgba(79,255,176,.05);border:1px solid rgba(79,255,176,.2)}.ib-green strong{color:var(--accent)}
+.ib-yellow{background:rgba(255,209,102,.05);border:1px solid rgba(255,209,102,.2)}.ib-yellow strong{color:var(--accent3)}
+.ib-blue{background:rgba(77,166,255,.05);border:1px solid rgba(77,166,255,.2)}.ib-blue strong{color:var(--accent4)}
+.bilan-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
+@media(max-width:500px){.bilan-grid{grid-template-columns:1fr}}
+.bilan-sec{background:var(--surface);border:1px solid var(--cborder);border-radius:12px;padding:14px}
+.bilan-sec h4{font-size:10px;font-family:var(--mono);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;padding-bottom:7px;border-bottom:1px solid var(--cborder)}
+.bilan-sec.bs-r h4{color:var(--accent)}.bilan-sec.bs-d h4{color:var(--accent2)}
+.bline{display:flex;justify-content:space-between;align-items:center;padding:5px 0;font-size:11px;border-bottom:1px solid rgba(255,255,255,.04)}
+.bline:last-child{border-bottom:none}
+.bline .bl{color:var(--muted);font-family:var(--mono)}
+.bline .bv{font-family:var(--mono);font-weight:600}
+.rbar{background:var(--surface);border:1px solid var(--cborder);border-radius:12px;padding:18px;display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.rbar .rl{font-size:12px;font-weight:700;color:var(--muted)}
+.rbar .rv{font-size:24px;font-weight:800;font-family:var(--mono)}
+.rb-pos .rv{color:var(--accent)}.rb-neg .rv{color:var(--accent2)}
+.urow{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--cborder);font-size:12px;font-family:var(--mono)}
+.urow:last-child{border-bottom:none}
+.ur-l{color:var(--muted);flex:1}.ur-r{color:var(--accent3);font-weight:500;min-width:70px;text-align:center}.ur-a{font-weight:600;min-width:80px;text-align:right}
+.cempty{text-align:center;padding:32px 20px;color:var(--muted);font-family:var(--mono);font-size:12px;border:1px dashed var(--cborder);border-radius:12px}
+.ctip-box{border-radius:8px;padding:9px 12px;font-size:11px;margin-bottom:10px;display:none}
+.three-kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+@media(max-width:480px){.three-kpi{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- ── Header ── -->
+<div class="hdr">
+  <div>
+    <h1>Bonjour Erwan 👋</h1>
+    <p id="hdr-date"></p>
+  </div>
+  <div class="stats">
+    <div class="stat sr"><div class="stat-n" id="cnt-todo">0</div><div class="stat-l">À faire</div></div>
+    <div class="stat sg"><div class="stat-n" id="cnt-done">0</div><div class="stat-l">Faites</div></div>
+  </div>
+</div>
+
+<!-- ── Tabs ── -->
+<div class="tabs">
+  <button class="tab on"  onclick="showTab('tasks')">📋 Tâches</button>
+  <button class="tab"     onclick="showTab('planning')">📅 Planning</button>
+  <button class="tab"     onclick="showTab('agenda')">🗓 Agenda</button>
+  <button class="tab"     onclick="showTab('compta')">💰 Compta</button>
+  <button class="tab"     onclick="showTab('editor')">✏️ Éditeur</button>
+</div>
+
+<!-- ════ TÂCHES ════ -->
+<div id="tab-tasks">
+  <div class="pills" id="urg-pills" style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px">
+    <button class="pill on" data-urg="all" onclick="setUf('all')" style="border:1px solid #e2e8f0;border-radius:20px;padding:4px 12px;font-size:12px;font-weight:600;cursor:pointer;background:#0f172a;color:white">Tout <span id="cnt-all"></span></button>
+    <button class="pill" data-urg="feu" onclick="setUf('feu')" style="border:1px solid #fecaca;border-radius:20px;padding:4px 12px;font-size:12px;font-weight:600;cursor:pointer;background:white;color:#dc2626">🔥 Urgent <span id="cnt-feu"></span></button>
+    <button class="pill" data-urg="semaine" onclick="setUf('semaine')" style="border:1px solid #fed7aa;border-radius:20px;padding:4px 12px;font-size:12px;font-weight:600;cursor:pointer;background:white;color:#d97706">⚡ Semaine <span id="cnt-semaine"></span></button>
+    <button class="pill" data-urg="mois" onclick="setUf('mois')" style="border:1px solid #bfdbfe;border-radius:20px;padding:4px 12px;font-size:12px;font-weight:600;cursor:pointer;background:white;color:#2563eb">📌 Ce mois <span id="cnt-mois"></span></button>
+    <button class="pill" data-urg="plus" onclick="setUf('plus')" style="border:1px solid #e2e8f0;border-radius:20px;padding:4px 12px;font-size:12px;font-weight:600;cursor:pointer;background:white;color:#64748b">🗓 Plus tard <span id="cnt-plus"></span></button>
+  </div>
+  <div id="cat-pills" style="display:flex;gap:5px;overflow-x:auto;padding-bottom:3px;margin-bottom:10px"></div>
+  <div class="srow">
+    <input type="text" placeholder="🔍 Rechercher…" id="search" oninput="renderTasks()">
+    <button class="btn-dark" onclick="toggleForm('ftask')">+ Tâche</button>
+  </div>
+  <div class="form-card" id="ftask">
+    <input type="text" id="nt-title" placeholder="Titre de la tâche…" style="margin-bottom:7px">
+    <div class="row2"><select id="nt-cat"></select><select id="nt-urg"><option value="feu">🔥 Urgent</option><option value="semaine" selected>⚡ Semaine</option><option value="mois">📌 Ce mois</option><option value="plus">🗓 Plus tard</option></select></div>
+    <input type="text" id="nt-note" placeholder="Note (optionnel)…" style="margin-bottom:0">
+    <div class="fbtn"><button class="btn-ok" onclick="addTask()">Ajouter</button><button class="btn-no" onclick="toggleForm('ftask')">Annuler</button></div>
+  </div>
+  <div class="tlist" id="tlist"></div>
+  <button class="sdone" id="sdone-btn" onclick="toggleDone()"></button>
+  <div class="tip">💡 <strong>Focus TDAH :</strong> filtre 🔥 Urgent → une tâche → coche → suivante. Courriers en premier, du plus récent au plus ancien.</div>
+</div>
+
+<!-- ════ PLANNING ════ -->
+<div id="tab-planning" style="display:none">
+  <div class="wnav">
+    <button onclick="moveWeek(-1)">‹</button>
+    <span class="wtitle" id="wtitle"></span>
+    <button onclick="moveWeek(1)">›</button>
+  </div>
+  <div class="legend" id="wlegend"></div>
+  <div class="wgrid" id="wgrid"></div>
+  <div class="smodal" id="smodal">
+    <div style="font-weight:700;font-size:13px;margin-bottom:10px" id="smodal-title">Ajouter un créneau</div>
+    <div class="sgrid" id="stgrid"></div>
+    <input type="text" id="scustom" placeholder="Ou libellé personnalisé…">
+    <div class="fbtn"><button class="btn-ok-y" onclick="confirmSlot()">Ajouter</button><button class="btn-no" onclick="closeSlot()">Annuler</button></div>
+  </div>
+  <p style="font-size:11px;color:#94a3b8;margin-top:4px">Clique + pour ajouter • Clique sur un créneau pour le supprimer</p>
+</div>
+
+<!-- ════ AGENDA ════ -->
+<div id="tab-agenda" style="display:none">
+  <div class="mcal">
+    <div class="mnav">
+      <button onclick="moveCal(-1)">‹</button>
+      <span class="mtitle" id="mtitle"></span>
+      <button onclick="moveCal(1)">›</button>
+    </div>
+    <div class="mgrid" id="mhdr"></div>
+    <div class="mgrid" id="mgrid"></div>
+  </div>
+  <div class="dpanel" id="dpanel" style="display:none">
+    <div class="dphdr">
+      <span class="dptitle" id="dptitle"></span>
+      <button class="addev" onclick="openAddEv()">+ Événement</button>
+    </div>
+    <div id="dpevents"></div>
+  </div>
+  <div class="evform" id="fevt">
+    <div style="font-weight:700;font-size:13px;margin-bottom:9px">📅 Nouvel événement</div>
+    <input type="text" id="ne-title" placeholder="Titre…">
+    <div class="row2" style="margin-bottom:7px"><input type="date" id="ne-date"><select id="ne-cat"></select></div>
+    <input type="text" id="ne-note" placeholder="Note (optionnel)…" style="margin-bottom:0">
+    <div class="fbtn"><button class="btn-ok-y" onclick="addEvent()">Ajouter</button><button class="btn-no" onclick="closeEvForm()">Annuler</button></div>
+  </div>
+  <div class="upcoming">
+    <div class="uptitle">📍 Prochains événements</div>
+    <div id="uplist"></div>
+    <button class="addevfoot" onclick="openAddEvGeneric()">+ Ajouter un événement</button>
+  </div>
+</div>
+
+<!-- ════ COMPTABILITÉ ════ -->
+<div id="tab-compta" style="display:none">
+  <div class="c-header">
+    <div class="c-logo">
+      <h2>Finances <span>Libérales</span></h2>
+      <p>Cardio Parc · Rillieux · Déclaration 2035 BNC</p>
+    </div>
+    <div class="c-year" id="c-year">2026</div>
+  </div>
+
+  <div class="kpi-row">
+    <div class="ckpi green"><div class="ckpi-label">Rétrocessions HT</div><div class="ckpi-value" id="k-ret">0 €</div><div class="ckpi-sub" id="k-ret-n">0 encaissement(s)</div></div>
+    <div class="ckpi red"><div class="ckpi-label">Charges déductibles</div><div class="ckpi-value" id="k-chg">0 €</div><div class="ckpi-sub" id="k-chg-n">0 dépense(s)</div></div>
+    <div class="ckpi yellow"><div class="ckpi-label">URSSAF / CARMF est.</div><div class="ckpi-value" id="k-urs">0 €</div><div class="ckpi-sub">~21.2% du BNC net</div></div>
+    <div class="ckpi blue"><div class="ckpi-label">BNC imposable</div><div class="ckpi-value" id="k-bnc">0 €</div><div class="ckpi-sub">Rétrocessions − Charges</div></div>
+  </div>
+
+  <div class="ctabs">
+    <button class="ctab active" onclick="switchCTab('recettes',this)">💰 Rétrocessions</button>
+    <button class="ctab" onclick="switchCTab('depenses',this)">📋 Dépenses</button>
+    <button class="ctab" onclick="switchCTab('urssaf',this)">🏛 URSSAF</button>
+    <button class="ctab" onclick="switchCTab('bilan',this)">📊 Bilan 2035</button>
+  </div>
+
+  <!-- Rétrocessions -->
+  <div id="cp-recettes" class="cpanel active">
+    <div class="cinfo ib-green"><strong>Remplaçant :</strong> sélectionne <strong>Cardio Parc</strong> ou <strong>Rillieux</strong> à chaque saisie.</div>
+    <div class="ccard">
+      <h3>+ Nouvelle rétrocession</h3>
+      <div class="crow4">
+        <div class="cfield"><label>Date</label><input type="date" id="r-date" class="cdark"></div>
+        <div class="cfield"><label>Montant (€)</label><input type="number" id="r-montant" placeholder="0.00" min="0" step="0.01" class="cdark"></div>
+        <div class="cfield"><label>Site</label><select id="r-site" class="cdark"><option value="cp">Cardio Parc</option><option value="ril">Rillieux</option></select></div>
+        <div class="cfield"><label>Paiement</label><select id="r-pay" class="cdark"><option>Virement</option><option>Chèque</option><option>CB</option><option>Espèces</option></select></div>
+      </div>
+      <div class="crow2">
+        <div class="cfield"><label>Note</label><input type="text" id="r-desc" placeholder="ex : garde nuit 12/05" class="cdark"></div>
+        <div class="cfield" style="justify-content:flex-end"><button class="cbtn cbtn-primary" onclick="addRecette()">Enregistrer</button></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+      <select id="r-fm" onchange="renderR()" style="background:#14171f;border:1px solid #262c3d;color:#e8ecf5;border-radius:8px;padding:7px 10px;font-size:12px;font-family:monospace;flex:1;min-width:120px">
+        <option value="">Tous les mois</option>
+        <option value="01">Janvier</option><option value="02">Février</option><option value="03">Mars</option><option value="04">Avril</option><option value="05">Mai</option><option value="06">Juin</option><option value="07">Juillet</option><option value="08">Août</option><option value="09">Septembre</option><option value="10">Octobre</option><option value="11">Novembre</option><option value="12">Décembre</option>
+      </select>
+      <select id="r-fs" onchange="renderR()" style="background:#14171f;border:1px solid #262c3d;color:#e8ecf5;border-radius:8px;padding:7px 10px;font-size:12px;font-family:monospace;flex:1;min-width:120px">
+        <option value="">Tous les sites</option><option value="cp">Cardio Parc</option><option value="ril">Rillieux</option>
+      </select>
+    </div>
+    <div class="ccard" style="padding:0;overflow:hidden">
+      <div class="ctable-wrap"><table><thead><tr><th>Date</th><th>Site</th><th>Note</th><th>Paiement</th><th style="text-align:right">Montant</th><th></th></tr></thead><tbody id="r-tbody"></tbody></table></div>
+      <div id="r-empty" class="cempty">💳 Aucune rétrocession enregistrée</div>
+    </div>
+  </div>
+
+  <!-- Dépenses -->
+  <div id="cp-depenses" class="cpanel">
+    <div class="cinfo ib-green"><strong>Frais déductibles</strong> — le % pro est automatique selon la catégorie.</div>
+    <div class="ccard">
+      <h3>+ Nouvelle dépense</h3>
+      <div class="crow4">
+        <div class="cfield"><label>Date</label><input type="date" id="d-date" class="cdark"></div>
+        <div class="cfield"><label>Montant réel (€)</label><input type="number" id="d-montant" placeholder="0.00" min="0" step="0.01" class="cdark"></div>
+        <div class="cfield"><label>Catégorie</label>
+          <select id="d-cat" onchange="onCat()" class="cdark">
+            <optgroup label="🚗 Déplacements"><option value="essence" data-pct="100">Essence</option><option value="peage" data-pct="100">Péages</option><option value="parking" data-pct="100">Parking pro</option><option value="barem_km" data-pct="100">Barème km</option><option value="transport" data-pct="100">Transport commun</option><option value="taxi_vtc" data-pct="100">Taxi / VTC</option></optgroup>
+            <optgroup label="🛡 Assurances"><option value="rcp" data-pct="100">RCP</option><option value="prevoyance" data-pct="100">Prévoyance Madelin</option></optgroup>
+            <optgroup label="🏛 Cotisations"><option value="urssaf_verso" data-pct="100">URSSAF versée</option><option value="carmf" data-pct="100">CARMF</option><option value="ordre" data-pct="100">Cotis. ordinale</option><option value="syndicat" data-pct="100">Cotis. syndicale</option></optgroup>
+            <optgroup label="🍽 Repas"><option value="repas_seul" data-pct="100">Repas seul (déplacement)</option><option value="repas_affaires" data-pct="100">Repas d'affaires</option></optgroup>
+            <optgroup label="📱 Téléphonie"><option value="telephone" data-pct="50">Téléphone (mixte 50%)</option><option value="telephone_pro" data-pct="100">Téléphone (100% pro)</option><option value="internet" data-pct="25">Internet domicile (25%)</option></optgroup>
+            <optgroup label="📚 Formation"><option value="uptodate" data-pct="100">UpToDate / Vidal</option><option value="livres" data-pct="100">Livres médicaux</option><option value="revues" data-pct="100">Revues médicales</option><option value="dpc" data-pct="100">Formation DPC</option><option value="congres_inscr" data-pct="100">Inscription congrès</option><option value="congres_transp" data-pct="100">Transport congrès</option><option value="congres_hotel" data-pct="100">Hébergement congrès</option></optgroup>
+            <optgroup label="🩺 Matériel"><option value="stetho" data-pct="100">Matériel médical</option><option value="blouse" data-pct="100">Tenue pro</option><option value="gel_masques" data-pct="100">EPI / masques</option></optgroup>
+            <optgroup label="💻 Logiciels"><option value="logiciel_compta" data-pct="100">Logiciel compta</option><option value="doctolib" data-pct="100">Doctolib</option><option value="cloud_pro" data-pct="50">Cloud (50%)</option><option value="ordi_tablette" data-pct="50">Ordi/tablette (50%)</option></optgroup>
+            <optgroup label="🏦 Banque"><option value="compte_pro" data-pct="100">Compte bancaire pro</option><option value="frais_banque" data-pct="100">Frais bancaires</option></optgroup>
+            <optgroup label="📎 Fournitures"><option value="fournitures" data-pct="100">Fournitures bureau</option><option value="courriers" data-pct="100">Courriers pro</option></optgroup>
+            <optgroup label="⚙️ Divers"><option value="autre" data-pct="100">Autre charge pro</option></optgroup>
+          </select>
+        </div>
+        <div class="cfield"><label>% Pro</label><select id="d-pct" class="cdark"><option value="100">100%</option><option value="75">75%</option><option value="50">50%</option><option value="25">25%</option></select></div>
+      </div>
+      <div id="ctip-box" class="cinfo ib-blue ctip-box"></div>
+      <div class="crow2">
+        <div class="cfield"><label>Description / justificatif</label><input type="text" id="d-desc" placeholder="ex : plein essence A7 → Cardio Parc" class="cdark"></div>
+        <div class="cfield" style="justify-content:flex-end"><button class="cbtn cbtn-primary" onclick="addDepense()">Enregistrer</button></div>
+      </div>
+    </div>
+    <select id="d-fm" onchange="renderD()" style="background:#14171f;border:1px solid #262c3d;color:#e8ecf5;border-radius:8px;padding:7px 10px;font-size:12px;font-family:monospace;margin-bottom:12px;width:100%">
+      <option value="">Tous les mois</option>
+      <option value="01">Janvier</option><option value="02">Février</option><option value="03">Mars</option><option value="04">Avril</option><option value="05">Mai</option><option value="06">Juin</option><option value="07">Juillet</option><option value="08">Août</option><option value="09">Septembre</option><option value="10">Octobre</option><option value="11">Novembre</option><option value="12">Décembre</option>
+    </select>
+    <div class="ccard" style="padding:0;overflow:hidden">
+      <div class="ctable-wrap"><table><thead><tr><th>Date</th><th>Description</th><th>Catégorie</th><th>% Pro</th><th style="text-align:right">Brut</th><th style="text-align:right">Déductible</th><th></th></tr></thead><tbody id="d-tbody"></tbody></table></div>
+      <div id="d-empty" class="cempty">📋 Aucune dépense enregistrée</div>
+    </div>
+  </div>
+
+  <!-- URSSAF -->
+  <div id="cp-urssaf" class="cpanel">
+    <div class="cinfo ib-yellow"><strong>⚠️ Taux indicatifs 2026 — remplaçant non installé.</strong> Vérifie les montants exacts sur urssaf.fr.</div>
+    <div class="ccard">
+      <div class="urow"><span class="ur-l" style="color:var(--ctext);font-weight:600">BNC net (base)</span><span class="ur-r">–</span><span class="ur-a cpos" id="u-bnc">0 €</span></div>
+      <div class="urow"><span class="ur-l">Maladie + alloc. familiales</span><span class="ur-r">~9.6%</span><span class="ur-a" id="u-mal">0 €</span></div>
+      <div class="urow"><span class="ur-l">Retraite de base (CARMF)</span><span class="ur-r">~8.23%</span><span class="ur-a" id="u-ret">0 €</span></div>
+      <div class="urow"><span class="ur-l">Retraite complémentaire</span><span class="ur-r">~2.0%</span><span class="ur-a" id="u-comp">0 €</span></div>
+      <div class="urow"><span class="ur-l">CSG / CRDS</span><span class="ur-r">~7.3%</span><span class="ur-a" id="u-csg">0 €</span></div>
+      <div class="urow" style="border-top:1px solid var(--cborder);margin-top:6px;padding-top:12px">
+        <span class="ur-l cwarn" style="font-weight:700">TOTAL ESTIMÉ</span><span class="ur-r cwarn">~21.2%</span><span class="ur-a cwarn" style="font-size:15px" id="u-tot">0 €</span>
+      </div>
+    </div>
+    <div class="ccard">
+      <h3>Paiements déjà effectués</h3>
+      <div class="crow3">
+        <div class="cfield"><label>Date</label><input type="date" id="u-date" class="cdark"></div>
+        <div class="cfield"><label>Montant (€)</label><input type="number" id="u-montant" placeholder="0.00" min="0" step="0.01" class="cdark"></div>
+        <div class="cfield"><label>Organisme</label><select id="u-org" class="cdark"><option>URSSAF</option><option>CARMF</option><option>Autre</option></select></div>
+      </div>
+      <button class="cbtn cbtn-primary" onclick="addCot()">Enregistrer le paiement</button>
+    </div>
+    <div class="ccard" style="padding:0;overflow:hidden">
+      <div class="ctable-wrap"><table><thead><tr><th>Date</th><th>Organisme</th><th style="text-align:right">Montant payé</th><th></th></tr></thead><tbody id="u-tbody"></tbody></table></div>
+      <div id="u-empty" class="cempty">🏛 Aucun paiement enregistré</div>
+    </div>
+    <div class="rbar rb-neg" id="u-balance-bar" style="margin-top:14px">
+      <div><div class="rl">Solde URSSAF estimé</div><div style="font-size:10px;color:var(--muted);font-family:monospace;margin-top:3px">Estimé − Déjà payé</div></div>
+      <div class="rv" id="u-solde">0 €</div>
+    </div>
+  </div>
+
+  <!-- Bilan -->
+  <div id="cp-bilan" class="cpanel">
+    <div class="cinfo ib-green"><strong>Synthèse 2035 —</strong> récapitulatif à transmettre au comptable.</div>
+    <div class="bilan-grid">
+      <div class="bilan-sec bs-r"><h4>Recettes BNC</h4><div id="b-r-detail"></div></div>
+      <div class="bilan-sec bs-d"><h4>Charges déductibles</h4><div id="b-d-detail"></div></div>
+    </div>
+    <div class="rbar rb-pos" id="b-result-bar">
+      <div><div class="rl">Bénéfice net BNC imposable</div><div style="font-size:10px;color:var(--muted);font-family:monospace;margin-top:3px">Rétrocessions − Charges − Cotisations</div></div>
+      <div class="rv" id="b-bnc-final">0 €</div>
+    </div>
+    <div class="three-kpi">
+      <div class="ckpi green"><div class="ckpi-label">Cardio Parc</div><div class="ckpi-value" id="b-cp">0 €</div></div>
+      <div class="ckpi blue"><div class="ckpi-label">Rillieux</div><div class="ckpi-value" id="b-ril">0 €</div></div>
+      <div class="ckpi red"><div class="ckpi-label">Total charges</div><div class="ckpi-value" id="b-chg">0 €</div></div>
+    </div>
+    <div class="ccard" style="text-align:center">
+      <h3 style="margin-bottom:8px">Export CSV</h3>
+      <p style="font-size:11px;color:var(--muted);font-family:monospace;margin-bottom:14px">Fichier prêt pour le comptable</p>
+      <button class="cbtn cbtn-primary" onclick="exportCSV()">📥 Télécharger CSV</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════ ÉDITEUR ════ -->
+<div id="tab-editor" style="display:none">
+  <div class="editor-wrap">
+    <h3>✏️ Modifier directement</h3>
+    <div class="einfo">Modifie le contenu de l'app sans passer par le chat.</div>
+    <div class="editor-tabs">
+      <button class="etab on" onclick="setEtab('tasks')">📋 Tâches</button>
+      <button class="etab" onclick="setEtab('events')">🗓 Événements</button>
+      <button class="etab" onclick="setEtab('cats')">🎨 Catégories</button>
+      <button class="etab" onclick="setEtab('slots')">📅 Créneaux</button>
+    </div>
+    <div id="etab-tasks">
+      <div class="elist" id="elist-tasks"></div>
+      <div class="enew-row">
+        <input type="text" id="en-ttitle" placeholder="Nouvelle tâche…">
+        <select id="en-tcat"></select>
+        <select id="en-turg"><option value="feu">🔥 Urgent</option><option value="semaine" selected>⚡ Semaine</option><option value="mois">📌 Ce mois</option><option value="plus">🗓 Plus tard</option></select>
+        <button class="btn-ok" style="padding:8px 14px;border-radius:8px;flex:none" onclick="addTaskEditor()">+ Ajouter</button>
+      </div>
+    </div>
+    <div id="etab-events" style="display:none">
+      <div class="elist" id="elist-events"></div>
+      <div class="enew-row">
+        <input type="text" id="en-etitle" placeholder="Nouvel événement…">
+        <input type="date" id="en-edate">
+        <select id="en-ecat"></select>
+        <button class="btn-ok-y" style="padding:8px 14px;border-radius:8px;flex:none" onclick="addEventEditor()">+ Ajouter</button>
+      </div>
+    </div>
+    <div id="etab-cats" style="display:none">
+      <div class="einfo">Clique sur le carré coloré pour changer la couleur.</div>
+      <div class="ecat-grid" id="elist-cats"></div>
+      <div class="enew-row" style="margin-top:10px">
+        <input type="text" id="en-cname" placeholder="Nom de la catégorie…">
+        <input type="color" id="en-ccolor" value="#3b82f6" style="width:48px;padding:4px;cursor:pointer">
+        <button class="btn-ok" style="padding:8px 14px;border-radius:8px;flex:none" onclick="addCatEditor()">+ Ajouter</button>
+      </div>
+    </div>
+    <div id="etab-slots" style="display:none">
+      <div class="ecat-grid" id="elist-slottypes"></div>
+      <div class="enew-row" style="margin-top:10px">
+        <input type="text" id="en-sname" placeholder="Nom du créneau…">
+        <input type="color" id="en-scolor" value="#6366f1" style="width:48px;padding:4px;cursor:pointer">
+        <button class="btn-ok" style="padding:8px 14px;border-radius:8px;flex:none" onclick="addSlotTypeEditor()">+ Ajouter</button>
+      </div>
+    </div>
+  </div>
+  <div class="editor-wrap">
+    <h3>💾 Sauvegarde</h3>
+    <div class="einfo">Exporte toutes tes données en JSON.</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn-ok" style="padding:9px 18px;border-radius:8px;flex:none" onclick="exportData()">⬇ Exporter JSON</button>
+      <button class="btn-ok-y" style="padding:9px 18px;border-radius:8px;flex:none" onclick="document.getElementById('importfile').click()">⬆ Importer JSON</button>
+      <input type="file" id="importfile" accept=".json" style="display:none" onchange="importData(event)">
+      <button class="btn-no" onclick="if(confirm('Tout remettre à zéro ?')){resetAll()}">🗑 Réinitialiser</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- /app -->
+
+<script>
+// ════════════════════════════════════════════
+//  DONNÉES PAR DÉFAUT
+// ════════════════════════════════════════════
+const DEFAULT_CATS={
+  medical:{label:"Médical",color:"#ef4444",bg:"#fef2f2",tc:"#991b1b"},
+  admin:{label:"Admin",color:"#f97316",bg:"#fff7ed",tc:"#9a3412"},
+  perso:{label:"Perso",color:"#ec4899",bg:"#fdf2f8",tc:"#9d174d"},
+  sport:{label:"Sport",color:"#10b981",bg:"#f0fdf4",tc:"#065f46"},
+  appart:{label:"Appart",color:"#8b5cf6",bg:"#f5f3ff",tc:"#4c1d95"},
+  projet:{label:"Projet",color:"#3b82f6",bg:"#eff6ff",tc:"#1e3a8a"},
+  event:{label:"Événement",color:"#f59e0b",bg:"#fffbeb",tc:"#78350f"},
+};
+
+const DEFAULT_SLOT_TYPES=[
+  {key:"garde",label:"Garde",color:"#7c3aed",bg:"#ede9fe",tc:"#3b0764"},
+  {key:"bloc",label:"Bloc op.",color:"#dc2626",bg:"#fef2f2",tc:"#7f1d1d"},
+  {key:"consultation",label:"Consult.",color:"#ef4444",bg:"#fef2f2",tc:"#991b1b"},
+  {key:"rillieux",label:"Rillieux",color:"#2563eb",bg:"#eff6ff",tc:"#1e3a8a"},
+  {key:"cardioparc",label:"Cardio Parc",color:"#dc2626",bg:"#fef2f2",tc:"#7f1d1d"},
+  {key:"boxe",label:"Boxe 🥊",color:"#db2777",bg:"#fdf2f8",tc:"#831843"},
+  {key:"muscu",label:"Muscu 💪",color:"#059669",bg:"#f0fdf4",tc:"#064e3b"},
+  {key:"sport",label:"Sport",color:"#16a34a",bg:"#f0fdf4",tc:"#14532d"},
+  {key:"repos",label:"Repos",color:"#6b7280",bg:"#f9fafb",tc:"#374151"},
+  {key:"perso",label:"Perso",color:"#ec4899",bg:"#fdf2f8",tc:"#9d174d"},
+  {key:"recherche",label:"Recherche",color:"#2563eb",bg:"#eff6ff",tc:"#1e3a8a"},
+  {key:"formation",label:"Formation",color:"#d97706",bg:"#fffbeb",tc:"#78350f"},
+];
+
+const DEFAULT_TASKS=[
+  {id:1,title:"Courriers consult — moins d'1 mois",cat:"medical",urg:"feu",done:false,note:"Commencer ici, priorité absolue"},
+  {id:2,title:"Courriers consult — 1 à 3 mois",cat:"medical",urg:"feu",done:false,note:""},
+  {id:3,title:"Courriers consult — 3 à 6 mois",cat:"medical",urg:"semaine",done:false,note:""},
+  {id:4,title:"Courriers consult — 6 à 12 mois",cat:"medical",urg:"mois",done:false,note:"Objectif : tout remonter en 2 mois"},
+  {id:5,title:"Remplacements Rillieux — planning",cat:"medical",urg:"semaine",done:false,note:""},
+  {id:6,title:"URSSAF — payer la cotisation",cat:"admin",urg:"feu",done:false,note:"Risque de pénalité"},
+  {id:7,title:"Comptabilité Cardio Parc",cat:"admin",urg:"semaine",done:false,note:""},
+  {id:8,title:"Créer la société de barquette",cat:"admin",urg:"mois",done:false,note:"Statuts, KBIS, compte pro"},
+  {id:9,title:"Vols Las Vegas — combat de Fares 6 juin",cat:"event",urg:"feu",done:false,note:"Retour impératif le 7 juin — bloc le 8"},
+  {id:10,title:"Bloc opératoire — 8 juin",cat:"medical",urg:"semaine",done:false,note:"Ne pas rater"},
+  {id:11,title:"Copine — soirée / weekend dédié",cat:"perso",urg:"semaine",done:false,note:""},
+  {id:12,title:"Appart Oullins — acte authentique",cat:"appart",urg:"mois",done:false,note:"Fin juin / début juillet — relancer notaire"},
+  {id:13,title:"Travaux appart — planifier avec papa",cat:"appart",urg:"mois",done:false,note:"Douche italienne, WC suspendu, parquet chêne"},
+  {id:14,title:"Permis bateau",cat:"appart",urg:"plus",done:false,note:""},
+  {id:15,title:"Master 2 Brest — suivre candidature",cat:"projet",urg:"semaine",done:false,note:""},
+  {id:16,title:"CALCI-TAVI — data extraction CT scans",cat:"projet",urg:"mois",done:false,note:"Emails collègues pour dataset"},
+  {id:17,title:"Sport — 3 séances / semaine",cat:"sport",urg:"semaine",done:false,note:"Boxe + muscu, ne pas sauter"},
+  {id:18,title:"Nutrition — protocole perte de graisse",cat:"sport",urg:"mois",done:false,note:"Flexible, non restrictif"},
+];
+
+const DEFAULT_EVENTS=[
+  {id:1,title:"Combat de Fares 🥊",date:"2026-06-06",cat:"event",note:"Las Vegas"},
+  {id:2,title:"Retour Las Vegas ✈️",date:"2026-06-07",cat:"event",note:"Rentrer ce jour impérativement"},
+  {id:3,title:"Bloc opératoire 🏥",date:"2026-06-08",cat:"medical",note:"Reprendre le bloc"},
+  {id:4,title:"Acte authentique appart",date:"2026-06-28",cat:"appart",note:"27 Av. Jean Jaurès, Oullins"},
+];
+
+// ════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════
+let tasks=[],events=[],slots={},CATS={},SLOT_TYPES=[];
+let RR=[],DD=[],CC=[];
+let uf="all",cf="all",showDone=false;
+let calDate=new Date(),selDay=null;
+let weekStart=getWeekStart(new Date());
+let pendingSlotDay=null,selSlotType=null;
+let TID=700,EID=700;
+const TODAY=todayStr();
+
+function todayStr(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+
+// ════════════════════════════════════════════
+//  STORAGE
+// ════════════════════════════════════════════
+function save(){
+  localStorage.setItem('erwan_tasks',JSON.stringify(tasks));
+  localStorage.setItem('erwan_events',JSON.stringify(events));
+  localStorage.setItem('erwan_slots',JSON.stringify(slots));
+  localStorage.setItem('erwan_cats',JSON.stringify(CATS));
+  localStorage.setItem('erwan_slottypes',JSON.stringify(SLOT_TYPES));
+  localStorage.setItem('erwan_RR',JSON.stringify(RR));
+  localStorage.setItem('erwan_DD',JSON.stringify(DD));
+  localStorage.setItem('erwan_CC',JSON.stringify(CC));
+}
+
+function load(){
+  try{
+    const t=localStorage.getItem('erwan_tasks');
+    const e=localStorage.getItem('erwan_events');
+    const s=localStorage.getItem('erwan_slots');
+    const c=localStorage.getItem('erwan_cats');
+    const st=localStorage.getItem('erwan_slottypes');
+    const rr=localStorage.getItem('erwan_RR');
+    const dd=localStorage.getItem('erwan_DD');
+    const cc=localStorage.getItem('erwan_CC');
+    tasks=t?JSON.parse(t):DEFAULT_TASKS.map(x=>({...x}));
+    events=e?JSON.parse(e):DEFAULT_EVENTS.map(x=>({...x}));
+    slots=s?JSON.parse(s):{};
+    CATS=c?JSON.parse(c):JSON.parse(JSON.stringify(DEFAULT_CATS));
+    SLOT_TYPES=st?JSON.parse(st):DEFAULT_SLOT_TYPES.map(x=>({...x}));
+    RR=rr?JSON.parse(rr):[];
+    DD=dd?JSON.parse(dd):[];
+    CC=cc?JSON.parse(cc):[];
+    TID=tasks.length?Math.max(...tasks.map(x=>x.id),699)+1:700;
+    EID=events.length?Math.max(...events.map(x=>x.id),699)+1:700;
+  }catch(err){
+    tasks=DEFAULT_TASKS.map(x=>({...x}));events=DEFAULT_EVENTS.map(x=>({...x}));
+    slots={};CATS=JSON.parse(JSON.stringify(DEFAULT_CATS));
+    SLOT_TYPES=DEFAULT_SLOT_TYPES.map(x=>({...x}));RR=[];DD=[];CC=[];
+  }
+}
+
+function exportData(){
+  const d={tasks,events,slots,CATS,SLOT_TYPES,RR,DD,CC};
+  const blob=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`erwan-orga-${TODAY}.json`;a.click();
+}
+function importData(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    try{
+      const d=JSON.parse(ev.target.result);
+      if(d.tasks)tasks=d.tasks;if(d.events)events=d.events;if(d.slots)slots=d.slots;
+      if(d.CATS)CATS=d.CATS;if(d.SLOT_TYPES)SLOT_TYPES=d.SLOT_TYPES;
+      if(d.RR)RR=d.RR;if(d.DD)DD=d.DD;if(d.CC)CC=d.CC;
+      TID=tasks.length?Math.max(...tasks.map(x=>x.id),699)+1:700;
+      EID=events.length?Math.max(...events.map(x=>x.id),699)+1:700;
+      save();init();alert('Import réussi !');
+    }catch(err){alert('Fichier invalide.');}
+  };
+  reader.readAsText(file);
+}
+function resetAll(){
+  tasks=DEFAULT_TASKS.map(x=>({...x}));events=DEFAULT_EVENTS.map(x=>({...x}));
+  slots={};CATS=JSON.parse(JSON.stringify(DEFAULT_CATS));
+  SLOT_TYPES=DEFAULT_SLOT_TYPES.map(x=>({...x}));RR=[];DD=[];CC=[];
+  TID=700;EID=700;save();init();
+}
+
+// ════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════
+function init(){
+  const now=new Date();
+  const jours=["Dimanche","Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi"];
+  const mois=["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+  document.getElementById('hdr-date').textContent=`${jours[now.getDay()]} ${now.getDate()} ${mois[now.getMonth()]} ${now.getFullYear()}`;
+  document.getElementById('c-year').textContent=now.getFullYear();
+  buildCatPills();buildSelects();buildSlotLegend();buildSlotTypeGrid();
+  renderTasks();renderWeek();renderCal();renderUpcoming();
+  renderEditorTasks();renderEditorEvents();renderEditorCats();renderEditorSlotTypes();
+  renderAll_compta();
+  const today2=new Date().toISOString().slice(0,10);
+  ['r-date','d-date','u-date'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=today2;});
+  onCat();
+}
+
+// ════════════════════════════════════════════
+//  TABS
+// ════════════════════════════════════════════
+function showTab(t){
+  ['tasks','planning','agenda','compta','editor'].forEach(k=>{
+    document.getElementById('tab-'+k).style.display=k===t?'block':'none';
+  });
+  document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('on',['tasks','planning','agenda','compta','editor'][i]===t));
+  if(t==='editor'){renderEditorTasks();renderEditorEvents();renderEditorCats();renderEditorSlotTypes();}
+  if(t==='compta'){renderAll_compta();}
+}
+function setEtab(t){
+  ['tasks','events','cats','slots'].forEach(k=>{document.getElementById('etab-'+k).style.display=k===t?'block':'none';});
+  document.querySelectorAll('.etab').forEach((b,i)=>b.classList.toggle('on',['tasks','events','cats','slots'][i]===t));
+}
+function switchCTab(name,btn){
+  document.querySelectorAll('.cpanel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.ctab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('cp-'+name).classList.add('active');
+  btn.classList.add('active');
+  renderAll_compta();
+}
+
+// ════════════════════════════════════════════
+//  HELPERS UI
+// ════════════════════════════════════════════
+function buildCatPills(){
+  const row=document.getElementById('cat-pills');
+  row.innerHTML='<button style="border:1px solid #0f172a;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:600;cursor:pointer;background:#0f172a;color:white;white-space:nowrap" data-cat="all" onclick="setCf(\'all\')">Toutes</button>';
+  Object.entries(CATS).forEach(([k,v])=>{
+    row.innerHTML+=`<button style="border:1px solid ${v.color}50;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:600;cursor:pointer;background:${v.bg};color:${v.tc||v.color};white-space:nowrap" data-cat="${k}" onclick="setCf('${k}')">${v.label}</button>`;
+  });
+}
+function buildSelects(){
+  const opts=()=>Object.entries(CATS).map(([k,v])=>`<option value="${k}">${v.label}</option>`).join('');
+  ['nt-cat','ne-cat','en-tcat','en-ecat'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=opts();});
+}
+function buildSlotLegend(){
+  document.getElementById('wlegend').innerHTML=SLOT_TYPES.map(s=>`<div class="leg"><div class="legdot" style="background:${s.color}"></div>${s.label}</div>`).join('');
+}
+function buildSlotTypeGrid(){
+  document.getElementById('stgrid').innerHTML=SLOT_TYPES.map(s=>`<button class="stbtn" data-sk="${s.key}" onclick="selSlot('${s.key}')" style="background:${s.bg};color:${s.tc||s.color};border-color:${s.color}50">${s.label}</button>`).join('');
+}
+function toggleForm(id){document.getElementById(id).classList.toggle('on');}
+function closeEvForm(){document.getElementById('fevt').classList.remove('on');}
+
+// ════════════════════════════════════════════
+//  FILTRES TÂCHES
+// ════════════════════════════════════════════
+function setUf(v){
+  uf=v;
+  document.querySelectorAll('[data-urg]').forEach(b=>{b.classList.toggle('on',b.dataset.urg===v);b.style.background=b.dataset.urg===v?'#0f172a':'white';b.style.color=b.dataset.urg===v?'white':b.dataset.urg==='feu'?'#dc2626':b.dataset.urg==='semaine'?'#d97706':b.dataset.urg==='mois'?'#2563eb':'#64748b';});
+  renderTasks();
+}
+function setCf(v){
+  cf=v;
+  document.querySelectorAll('[data-cat]').forEach(b=>{
+    const isAll=b.dataset.cat==='all';const active=b.dataset.cat===v;
+    if(isAll){b.style.background=active?'#0f172a':'white';b.style.color=active?'white':'#64748b';}
+    else{const c=CATS[b.dataset.cat];if(c){b.style.background=active?c.color:c.bg;b.style.color=active?'white':(c.tc||c.color);}}
+  });
+  renderTasks();
+}
+function toggleDone(){showDone=!showDone;renderTasks();}
+
+// ════════════════════════════════════════════
+//  RENDER TÂCHES
+// ════════════════════════════════════════════
+const URG_COLOR={feu:'#dc2626',semaine:'#d97706',mois:'#2563eb',plus:'#6b7280'};
+const URG_LABEL={feu:'🔥 Urgent',semaine:'⚡ Semaine',mois:'📌 Ce mois',plus:'🗓 Plus tard'};
+
+function renderTasks(){
+  const q=document.getElementById('search').value.toLowerCase();
+  const vis=tasks.filter(t=>{
+    if(!showDone&&t.done)return false;
+    if(uf!=='all'&&t.urg!==uf)return false;
+    if(cf!=='all'&&t.cat!==cf)return false;
+    if(q&&!t.title.toLowerCase().includes(q)&&!(t.note||'').toLowerCase().includes(q))return false;
+    return true;
+  });
+  const np=tasks.filter(t=>!t.done).length,nd=tasks.filter(t=>t.done).length;
+  document.getElementById('cnt-todo').textContent=np;document.getElementById('cnt-done').textContent=nd;
+  document.getElementById('cnt-all').textContent=np;
+  ['feu','semaine','mois','plus'].forEach(k=>{document.getElementById('cnt-'+k).textContent=tasks.filter(t=>!t.done&&t.urg===k).length;});
+  document.getElementById('sdone-btn').textContent=showDone?'Masquer les tâches faites':'Voir les '+nd+' tâches complétées';
+  const list=document.getElementById('tlist');
+  if(!vis.length){list.innerHTML=`<div class="empty">${np===0?'🎉 Tout est fait, bravo !':'Aucune tâche ici'}</div>`;return;}
+  list.innerHTML=vis.map(t=>{
+    const c=CATS[t.cat]||{color:'#888',bg:'#f1f5f9',tc:'#555',label:'?'};
+    return `<div class="titem${t.done?' done':''}" style="border-left-color:${t.done?'#e2e8f0':c.color}">
+      <div class="tinner">
+        <button class="chk" onclick="toggleTask(${t.id})" style="border-color:${t.done?'#e2e8f0':c.color};background:${t.done?c.color:'transparent'}">${t.done?'✓':''}</button>
+        <div class="tbody">
+          <div class="ttitle">${t.title}</div>
+          <div class="tagrow">
+            <span class="tag" style="background:${c.bg};color:${c.tc||c.color}">${c.label}</span>
+            <span style="font-size:11px;font-weight:600;color:${URG_COLOR[t.urg]}">${URG_LABEL[t.urg]}</span>
+          </div>
+          ${t.note?`<div class="tnote">${t.note}</div>`:''}
+        </div>
+        <button class="xbtn" onclick="delTask(${t.id})">×</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+function toggleTask(id){const t=tasks.find(x=>x.id===id);if(t){t.done=!t.done;save();renderTasks();}}
+function delTask(id){if(confirm('Supprimer ?')){tasks=tasks.filter(x=>x.id!==id);save();renderTasks();}}
+function addTask(){
+  const title=document.getElementById('nt-title').value.trim();if(!title)return;
+  tasks.unshift({id:TID++,title,cat:document.getElementById('nt-cat').value,urg:document.getElementById('nt-urg').value,note:document.getElementById('nt-note').value.trim(),done:false});
+  document.getElementById('nt-title').value='';document.getElementById('nt-note').value='';
+  document.getElementById('ftask').classList.remove('on');save();renderTasks();
+}
+document.getElementById('nt-title').addEventListener('keydown',e=>{if(e.key==='Enter')addTask();});
+
+// ════════════════════════════════════════════
+//  PLANNING
+// ════════════════════════════════════════════
+function getWeekStart(d){const day=d.getDay(),diff=(day===0?-6:1-day);const m=new Date(d);m.setDate(d.getDate()+diff);m.setHours(0,0,0,0);return m;}
+function dsFrom(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+function moveWeek(n){weekStart=new Date(weekStart);weekStart.setDate(weekStart.getDate()+n*7);renderWeek();}
+const MSHORT=["Jan","Fév","Mar","Avr","Mai","Juin","Juil","Aoû","Sep","Oct","Nov","Déc"];
+const DSHORT=["Lun","Mar","Mer","Jeu","Ven","Sam","Dim"];
+function renderWeek(){
+  const days=[];for(let i=0;i<7;i++){const d=new Date(weekStart);d.setDate(weekStart.getDate()+i);days.push(d);}
+  const d0=days[0],d6=days[6];
+  document.getElementById('wtitle').textContent=`${d0.getDate()} ${MSHORT[d0.getMonth()]} — ${d6.getDate()} ${MSHORT[d6.getMonth()]} ${d6.getFullYear()}`;
+  document.getElementById('wgrid').innerHTML=days.map((d,i)=>{
+    const ds=dsFrom(d),isToday=ds===TODAY;
+    const daySlots=slots[ds]||[];
+    return `<div class="wcol">
+      <div class="wday-hdr${isToday?' wtoday':''}"><div class="wdn">${DSHORT[i]}</div><div class="wdd">${d.getDate()}</div></div>
+      ${daySlots.map((s,si)=>{const st=SLOT_TYPES.find(x=>x.key===s.key)||{color:'#888',bg:'#f1f5f9',tc:'#555',label:s.label||s.key};return `<button class="wslot" style="background:${st.bg};color:${st.tc||st.color}" onclick="removeSlot('${ds}',${si})" title="Clic pour supprimer">${st.label}</button>`;}).join('')}
+      <button class="wslot wadd" onclick="openSlot('${ds}')">+</button>
+    </div>`;
+  }).join('');
+}
+function openSlot(ds){
+  pendingSlotDay=ds;selSlotType=null;
+  document.querySelectorAll('.stbtn').forEach(b=>{const s=SLOT_TYPES.find(x=>x.key===b.dataset.sk);if(s){b.style.background=s.bg;b.style.borderWidth='1px';b.style.color=s.tc||s.color;}});
+  document.getElementById('scustom').value='';
+  const d=new Date(ds+'T12:00:00');
+  document.getElementById('smodal-title').textContent=`Créneau — ${d.getDate()} ${MSHORT[d.getMonth()]}`;
+  document.getElementById('smodal').classList.add('on');
+}
+function closeSlot(){document.getElementById('smodal').classList.remove('on');pendingSlotDay=null;selSlotType=null;}
+function selSlot(key){
+  selSlotType=key;
+  document.querySelectorAll('.stbtn').forEach(b=>{const s=SLOT_TYPES.find(x=>x.key===b.dataset.sk);const active=b.dataset.sk===key;if(s){b.style.background=active?s.color:s.bg;b.style.color=active?'white':(s.tc||s.color);b.style.borderWidth=active?'2px':'1px';}});
+}
+function confirmSlot(){
+  if(!pendingSlotDay)return;
+  const custom=document.getElementById('scustom').value.trim();
+  const obj=custom?{key:'custom',label:custom}:selSlotType?{key:selSlotType}:null;
+  if(!obj)return;
+  if(!slots[pendingSlotDay])slots[pendingSlotDay]=[];
+  slots[pendingSlotDay].push(obj);save();closeSlot();renderWeek();
+}
+function removeSlot(ds,idx){if(slots[ds]){slots[ds].splice(idx,1);if(!slots[ds].length)delete slots[ds];}save();renderWeek();}
+
+// ════════════════════════════════════════════
+//  AGENDA
+// ════════════════════════════════════════════
+const MFULL=["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
+function dsFor(yr,mo,d){return `${yr}-${String(mo+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;}
+function moveCal(n){calDate=new Date(calDate.getFullYear(),calDate.getMonth()+n,1);renderCal();}
+function renderCal(){
+  const yr=calDate.getFullYear(),mo=calDate.getMonth();
+  document.getElementById('mtitle').textContent=MFULL[mo]+' '+yr;
+  document.getElementById('mhdr').innerHTML=['L','M','M','J','V','S','D'].map(d=>`<div class="mdh">${d}</div>`).join('');
+  const dim=new Date(yr,mo+1,0).getDate(),startDow=(new Date(yr,mo,1).getDay()+6)%7;
+  let html='';for(let i=0;i<startDow;i++)html+='<div></div>';
+  for(let d=1;d<=dim;d++){
+    const ds=dsFor(yr,mo,d);
+    const evs=events.filter(e=>e.date===ds);
+    const dslots=slots[ds]||[];
+    const isToday=ds===TODAY,isSel=selDay&&selDay.d===d&&selDay.yr===yr&&selDay.mo===mo;
+    const dots=[...evs.map(e=>(CATS[e.cat]||{color:'#888'}).color),...dslots.map(s=>(SLOT_TYPES.find(x=>x.key===s.key)||{color:'#888'}).color)].slice(0,4);
+    html+=`<button class="mday${isToday?' mtoday':''}${isSel?' msel':''}" onclick="selectDay(${d},${yr},${mo})"><div class="mdn">${d}</div><div class="mdots">${dots.map(c=>`<div class="mdot" style="background:${isSel?'rgba(255,255,255,.6)':c}"></div>`).join('')}</div></button>`;
+  }
+  document.getElementById('mgrid').innerHTML=html;
+}
+function selectDay(d,yr,mo){
+  if(selDay&&selDay.d===d&&selDay.yr===yr&&selDay.mo===mo){selDay=null;document.getElementById('dpanel').style.display='none';}
+  else{selDay={d,yr,mo};renderCal();renderDayPanel();document.getElementById('dpanel').style.display='block';}
+}
+function renderDayPanel(){
+  if(!selDay)return;
+  const ds=dsFor(selDay.yr,selDay.mo,selDay.d);
+  document.getElementById('dptitle').textContent=`${selDay.d} ${MFULL[selDay.mo]} ${selDay.yr}`;
+  const evs=events.filter(e=>e.date===ds);
+  const dslots=slots[ds]||[];
+  let html='';
+  dslots.forEach(s=>{const st=SLOT_TYPES.find(x=>x.key===s.key)||{color:'#888',bg:'#f1f5f9',tc:'#555',label:s.label||s.key};html+=`<div class="evitem" style="background:${st.bg}"><div class="evbar" style="background:${st.color}"></div><div style="flex:1"><div class="evtitle">${st.label}</div><div class="evnote">Planning</div></div></div>`;});
+  evs.forEach(e=>{const c=CATS[e.cat]||{color:'#888',bg:'#f1f5f9'};html+=`<div class="evitem" style="background:${c.bg}"><div class="evbar" style="background:${c.color}"></div><div style="flex:1"><div class="evtitle">${e.title}</div>${e.note?`<div class="evnote">${e.note}</div>`:''}</div><button class="xbtn" onclick="delEvent(${e.id})">×</button></div>`;});
+  if(!html)html='<div class="empty" style="padding:10px 0">Aucun événement ce jour</div>';
+  document.getElementById('dpevents').innerHTML=html;
+}
+function openAddEv(){if(selDay)document.getElementById('ne-date').value=dsFor(selDay.yr,selDay.mo,selDay.d);document.getElementById('fevt').classList.add('on');document.getElementById('ne-title').focus();}
+function openAddEvGeneric(){document.getElementById('ne-date').value='';document.getElementById('fevt').classList.add('on');document.getElementById('ne-title').focus();}
+function addEvent(){
+  const title=document.getElementById('ne-title').value.trim(),date=document.getElementById('ne-date').value;
+  if(!title||!date)return;
+  events.push({id:EID++,title,date,cat:document.getElementById('ne-cat').value,note:document.getElementById('ne-note').value.trim()});
+  document.getElementById('ne-title').value='';document.getElementById('ne-note').value='';
+  document.getElementById('fevt').classList.remove('on');save();renderCal();renderUpcoming();if(selDay)renderDayPanel();
+}
+document.getElementById('ne-title').addEventListener('keydown',e=>{if(e.key==='Enter')addEvent();});
+function delEvent(id){if(confirm('Supprimer ?')){events=events.filter(x=>x.id!==id);save();renderCal();renderUpcoming();if(selDay)renderDayPanel();}}
+function renderUpcoming(){
+  const up=[...events].filter(e=>e.date>=TODAY).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,10);
+  const div=document.getElementById('uplist');
+  if(!up.length){div.innerHTML='<div class="empty" style="padding:8px 0">Aucun événement à venir</div>';return;}
+  div.innerHTML=up.map(e=>{
+    const c=CATS[e.cat]||{color:'#888',bg:'#f1f5f9',tc:'#555'};
+    const[,em,ed]=e.date.split('-');
+    const dif=Math.round((new Date(e.date)-new Date(TODAY))/864e5);
+    return `<div class="uitem"><div class="udate" style="background:${c.bg};border:1px solid ${c.color}30"><div class="udd" style="color:${c.tc||c.color}">${ed}</div><div class="umm" style="color:${c.tc||c.color}">${MSHORT[parseInt(em)-1]}</div></div><div class="ubody"><div class="utitle">${e.title}</div>${e.note?`<div class="unote">${e.note}</div>`:''}</div><div class="ujj" style="color:${dif<=3?'#dc2626':dif<=7?'#d97706':'#94a3b8'}">${dif===0?'Aujourd\'hui':dif===1?'Demain':'J-'+dif}</div></div>`;
+  }).join('');
+}
+
+// ════════════════════════════════════════════
+//  COMPTABILITÉ
+// ════════════════════════════════════════════
+const CL={essence:'Essence',peage:'Péages',parking:'Parking pro',barem_km:'Barème km',transport:'Transport',taxi_vtc:'Taxi/VTC',rcp:'RCP',prevoyance:'Prévoyance',urssaf_verso:'URSSAF versée',carmf:'CARMF',ordre:'Cotis. ordinale',syndicat:'Cotis. syndicale',repas_seul:'Repas seul',repas_affaires:"Repas affaires",telephone:'Téléphone 50%',telephone_pro:'Téléphone 100%',internet:'Internet 25%',uptodate:'UpToDate/Vidal',livres:'Livres médicaux',revues:'Revues médicales',dpc:'Formation DPC',congres_inscr:'Inscription congrès',congres_transp:'Transport congrès',congres_hotel:'Hébergement congrès',stetho:'Matériel médical',blouse:'Tenue pro',gel_masques:'EPI/masques',logiciel_compta:'Logiciel compta',doctolib:'Doctolib',cloud_pro:'Cloud 50%',ordi_tablette:'Ordi/tablette',compte_pro:'Compte bancaire',frais_banque:'Frais bancaires',fournitures:'Fournitures',courriers:'Courriers pro',autre:'Autre charge'};
+const CS={essence:'c-dep',peage:'c-dep',parking:'c-dep',barem_km:'c-dep',transport:'c-dep',taxi_vtc:'c-dep',rcp:'c-rcp',prevoyance:'c-cot',urssaf_verso:'c-cot',carmf:'c-cot',ordre:'c-cot',syndicat:'c-cot',repas_seul:'c-rep',repas_affaires:'c-rep',telephone:'c-tel',telephone_pro:'c-tel',internet:'c-tel',uptodate:'c-doc',livres:'c-doc',revues:'c-doc',dpc:'c-for',congres_inscr:'c-for',congres_transp:'c-for',congres_hotel:'c-for',stetho:'c-mat',blouse:'c-mat',gel_masques:'c-mat',logiciel_compta:'c-tel',doctolib:'c-tel',cloud_pro:'c-tel',ordi_tablette:'c-tel',compte_pro:'c-bnk',frais_banque:'c-bnk',fournitures:'c-oth',courriers:'c-oth',autre:'c-oth'};
+const cfmt=n=>new Intl.NumberFormat('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)+' €';
+
+function onCat(){
+  const sel=document.getElementById('d-cat');if(!sel)return;
+  const opt=sel.options[sel.selectedIndex];
+  const pct=opt.getAttribute('data-pct')||'100';
+  document.getElementById('d-pct').value=pct;
+  const box=document.getElementById('ctip-box');
+  if(box)box.style.display='none';
+}
+
+function addRecette(){
+  const date=document.getElementById('r-date').value;
+  const montant=parseFloat(document.getElementById('r-montant').value);
+  const site=document.getElementById('r-site').value;
+  const pay=document.getElementById('r-pay').value;
+  const desc=document.getElementById('r-desc').value;
+  if(!date||isNaN(montant)||montant<=0){alert('Date et montant requis.');return;}
+  RR.unshift({id:Date.now(),date,montant,site,pay,desc});
+  save();document.getElementById('r-montant').value='';document.getElementById('r-desc').value='';
+  renderAll_compta();
+}
+
+function renderR(){
+  const fm=document.getElementById('r-fm').value,fs=document.getElementById('r-fs').value;
+  const tbody=document.getElementById('r-tbody'),empty=document.getElementById('r-empty');
+  const data=RR.filter(r=>(!fm||r.date.slice(5,7)===fm)&&(!fs||r.site===fs));
+  if(!data.length){tbody.innerHTML='';empty.style.display='';return;}
+  empty.style.display='none';
+  tbody.innerHTML=data.map(r=>`<tr><td>${r.date}</td><td><span class="cbadge ${r.site==='cp'?'b-cp':'b-ril'}">${r.site==='cp'?'Cardio Parc':'Rillieux'}</span></td><td style="color:var(--muted)">${r.desc||'–'}</td><td><span class="cbadge b-vir">${r.pay}</span></td><td class="cpos" style="text-align:right">${cfmt(r.montant)}</td><td><button class="cbtn-sm" onclick="delR(${r.id})">✕</button></td></tr>`).join('');
+}
+function delR(id){RR=RR.filter(r=>r.id!==id);save();renderAll_compta();}
+
+function addDepense(){
+  const date=document.getElementById('d-date').value;
+  const montant=parseFloat(document.getElementById('d-montant').value);
+  const cat=document.getElementById('d-cat').value;
+  const pct=parseInt(document.getElementById('d-pct').value);
+  const desc=document.getElementById('d-desc').value;
+  if(!date||isNaN(montant)||montant<=0){alert('Date et montant requis.');return;}
+  DD.unshift({id:Date.now(),date,montant,cat,pct,desc});
+  save();document.getElementById('d-montant').value='';document.getElementById('d-desc').value='';
+  renderAll_compta();
+}
+
+function renderD(){
+  const fm=document.getElementById('d-fm').value;
+  const tbody=document.getElementById('d-tbody'),empty=document.getElementById('d-empty');
+  const data=DD.filter(d=>!fm||d.date.slice(5,7)===fm);
+  if(!data.length){tbody.innerHTML='';empty.style.display='';return;}
+  empty.style.display='none';
+  tbody.innerHTML=data.map(d=>{const ded=d.montant*d.pct/100;return `<tr><td>${d.date}</td><td style="color:var(--muted);font-size:10px">${d.desc||'–'}</td><td><span class="cbadge ${CS[d.cat]||'c-oth'}">${CL[d.cat]||d.cat}</span></td><td style="color:var(--muted)">${d.pct}%</td><td style="text-align:right;color:var(--muted)">${cfmt(d.montant)}</td><td class="cneg" style="text-align:right">${cfmt(ded)}</td><td><button class="cbtn-sm" onclick="delD(${d.id})">✕</button></td></tr>`;}).join('');
+}
+function delD(id){DD=DD.filter(d=>d.id!==id);save();renderAll_compta();}
+
+function addCot(){
+  const date=document.getElementById('u-date').value;
+  const montant=parseFloat(document.getElementById('u-montant').value);
+  const org=document.getElementById('u-org').value;
+  if(!date||isNaN(montant)||montant<=0){alert('Date et montant requis.');return;}
+  CC.unshift({id:Date.now(),date,montant,org});
+  save();document.getElementById('u-montant').value='';renderAll_compta();
+}
+
+function renderC(){
+  const tbody=document.getElementById('u-tbody'),empty=document.getElementById('u-empty');
+  if(!CC.length){tbody.innerHTML='';empty.style.display='';return;}
+  empty.style.display='none';
+  tbody.innerHTML=CC.map(c=>`<tr><td>${c.date}</td><td><span class="cbadge b-yellow">${c.org}</span></td><td class="cwarn" style="text-align:right">${cfmt(c.montant)}</td><td><button class="cbtn-sm" onclick="delC(${c.id})">✕</button></td></tr>`).join('');
+}
+function delC(id){CC=CC.filter(c=>c.id!==id);save();renderAll_compta();}
+
+function updateKPIs(){
+  const totalR=RR.reduce((s,r)=>s+r.montant,0);
+  const totalD=DD.reduce((s,d)=>s+d.montant*d.pct/100,0);
+  const bnc=Math.max(0,totalR-totalD);
+  const urssaf=bnc*0.212;
+  const totalPaye=CC.reduce((s,c)=>s+c.montant,0);
+  document.getElementById('k-ret').textContent=cfmt(totalR);
+  document.getElementById('k-ret-n').textContent=RR.length+' encaissement(s)';
+  document.getElementById('k-chg').textContent=cfmt(totalD);
+  document.getElementById('k-chg-n').textContent=DD.length+' dépense(s)';
+  document.getElementById('k-urs').textContent=cfmt(urssaf);
+  document.getElementById('k-bnc').textContent=cfmt(bnc);
+  document.getElementById('u-bnc').textContent=cfmt(bnc);
+  document.getElementById('u-mal').textContent=cfmt(bnc*0.096);
+  document.getElementById('u-ret').textContent=cfmt(bnc*0.0823);
+  document.getElementById('u-comp').textContent=cfmt(bnc*0.02);
+  document.getElementById('u-csg').textContent=cfmt(bnc*0.073);
+  document.getElementById('u-tot').textContent=cfmt(urssaf);
+  const solde=urssaf-totalPaye;
+  document.getElementById('u-balance-bar').className='rbar '+(solde>0?'rb-neg':'rb-pos');
+  document.getElementById('u-solde').textContent=cfmt(solde);
+  const cp=RR.filter(r=>r.site==='cp').reduce((s,r)=>s+r.montant,0);
+  const ril=RR.filter(r=>r.site==='ril').reduce((s,r)=>s+r.montant,0);
+  document.getElementById('b-cp').textContent=cfmt(cp);
+  document.getElementById('b-ril').textContent=cfmt(ril);
+  document.getElementById('b-chg').textContent=cfmt(totalD);
+  const bnc_final=Math.max(0,bnc-urssaf);
+  document.getElementById('b-bnc-final').textContent=cfmt(bnc_final);
+  document.getElementById('b-result-bar').className='rbar '+(bnc_final>=0?'rb-pos':'rb-neg');
+  document.getElementById('b-r-detail').innerHTML=[['Cardio Parc',cp,'var(--accent)'],['Rillieux',ril,'var(--accent4)'],['TOTAL',totalR,'var(--ctext)']].map(([l,v,c])=>`<div class="bline"><span class="bl">${l}</span><span class="bv" style="color:${c}">${cfmt(v)}</span></div>`).join('');
+  const byCat={};DD.forEach(d=>{byCat[d.cat]=(byCat[d.cat]||0)+d.montant*d.pct/100;});
+  const rows=Object.entries(byCat);
+  document.getElementById('b-d-detail').innerHTML=rows.length?rows.map(([k,v])=>`<div class="bline"><span class="bl">${CL[k]||k}</span><span class="bv" style="color:var(--accent2)">${cfmt(v)}</span></div>`).join('')+`<div class="bline"><span class="bl" style="color:var(--ctext);font-weight:700">TOTAL</span><span class="bv" style="color:var(--accent2)">${cfmt(totalD)}</span></div>`:'<div class="bline"><span class="bl">Aucune charge saisie</span></div>';
+}
+
+function renderAll_compta(){renderR();renderD();renderC();updateKPIs();}
+
+function exportCSV(){
+  let csv='Type,Date,Site/Organisme,Description,Catégorie,Montant brut,Montant déductible\n';
+  RR.forEach(r=>{csv+=`Rétrocession,${r.date},${r.site==='cp'?'Cardio Parc':'Rillieux'},"${r.desc||''}",Rétrocession,${r.montant},${r.montant}\n`;});
+  DD.forEach(d=>{const ded=(d.montant*d.pct/100).toFixed(2);csv+=`Dépense,${d.date},–,"${d.desc||''}",${CL[d.cat]||d.cat},${d.montant},${ded}\n`;});
+  CC.forEach(c=>{csv+=`Cotisation,${c.date},${c.org},–,Cotisation sociale,${c.montant},${c.montant}\n`;});
+  const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`finances_liberal_${new Date().getFullYear()}.csv`;a.click();
+}
+
+// ════════════════════════════════════════════
+//  ÉDITEUR
+// ════════════════════════════════════════════
+function renderEditorTasks(){
+  buildSelects();
+  document.getElementById('elist-tasks').innerHTML=tasks.map((t,i)=>`<div class="eitem"><input value="${t.title.replace(/"/g,'&quot;')}" onchange="tasks[${i}].title=this.value;save()"><select onchange="tasks[${i}].cat=this.value;save();renderTasks()">${Object.entries(CATS).map(([k,v])=>`<option value="${k}"${t.cat===k?' selected':''}>${v.label}</option>`).join('')}</select><select onchange="tasks[${i}].urg=this.value;save();renderTasks()">${['feu','semaine','mois','plus'].map(u=>`<option value="${u}"${t.urg===u?' selected':''}>${URG_LABEL[u]}</option>`).join('')}</select><button class="esave" onclick="save();renderTasks()">✓</button><button class="edel" onclick="tasks.splice(${i},1);save();renderTasks();renderEditorTasks()">×</button></div>`).join('');
+}
+function addTaskEditor(){
+  const title=document.getElementById('en-ttitle').value.trim();if(!title)return;
+  tasks.push({id:TID++,title,cat:document.getElementById('en-tcat').value,urg:document.getElementById('en-turg').value,note:'',done:false});
+  document.getElementById('en-ttitle').value='';save();renderTasks();renderEditorTasks();
+}
+function renderEditorEvents(){
+  document.getElementById('elist-events').innerHTML=events.map((e,i)=>`<div class="eitem"><input value="${e.title.replace(/"/g,'&quot;')}" onchange="events[${i}].title=this.value;save()"><input type="date" value="${e.date}" onchange="events[${i}].date=this.value;save()"><select onchange="events[${i}].cat=this.value;save()">${Object.entries(CATS).map(([k,v])=>`<option value="${k}"${e.cat===k?' selected':''}>${v.label}</option>`).join('')}</select><button class="esave" onclick="save();renderCal();renderUpcoming()">✓</button><button class="edel" onclick="events.splice(${i},1);save();renderCal();renderUpcoming();renderEditorEvents()">×</button></div>`).join('');
+}
+function addEventEditor(){
+  const title=document.getElementById('en-etitle').value.trim(),date=document.getElementById('en-edate').value;if(!title||!date)return;
+  events.push({id:EID++,title,date,cat:document.getElementById('en-ecat').value,note:''});
+  document.getElementById('en-etitle').value='';save();renderCal();renderUpcoming();renderEditorEvents();
+}
+function renderEditorCats(){
+  document.getElementById('elist-cats').innerHTML=Object.entries(CATS).map(([k,v])=>`<div class="ecatitem"><div class="ecol" style="background:${v.color}" onclick="pickCatColor('${k}')" title="Changer la couleur"></div><input value="${v.label}" onchange="CATS['${k}'].label=this.value;save();buildCatPills();buildSelects();renderTasks()"><button class="edel" onclick="if(confirm('Supprimer ?')){delete CATS['${k}'];save();buildCatPills();buildSelects();renderEditorCats();}">×</button></div>`).join('');
+}
+function pickCatColor(k){
+  const inp=document.createElement('input');inp.type='color';inp.value=CATS[k].color;
+  inp.onchange=()=>{const hex=inp.value;CATS[k].color=hex;CATS[k].bg=hex+'22';CATS[k].tc=darken(hex);save();buildCatPills();buildSlotLegend();renderTasks();renderEditorCats();};inp.click();
+}
+function addCatEditor(){
+  const name=document.getElementById('en-cname').value.trim();if(!name)return;
+  const color=document.getElementById('en-ccolor').value;
+  CATS['cat_'+Date.now()]={label:name,color,bg:color+'22',tc:darken(color)};
+  document.getElementById('en-cname').value='';save();buildCatPills();buildSelects();renderEditorCats();
+}
+function renderEditorSlotTypes(){
+  document.getElementById('elist-slottypes').innerHTML=SLOT_TYPES.map((s,i)=>`<div class="ecatitem"><div class="ecol" style="background:${s.color}" onclick="pickSlotColor(${i})" title="Changer la couleur"></div><input value="${s.label}" onchange="SLOT_TYPES[${i}].label=this.value;save();buildSlotLegend();buildSlotTypeGrid()"><button class="edel" onclick="SLOT_TYPES.splice(${i},1);save();buildSlotLegend();buildSlotTypeGrid();renderEditorSlotTypes()">×</button></div>`).join('');
+}
+function pickSlotColor(i){
+  const inp=document.createElement('input');inp.type='color';inp.value=SLOT_TYPES[i].color;
+  inp.onchange=()=>{const hex=inp.value;SLOT_TYPES[i].color=hex;SLOT_TYPES[i].bg=hex+'22';SLOT_TYPES[i].tc=darken(hex);save();buildSlotLegend();buildSlotTypeGrid();renderEditorSlotTypes();};inp.click();
+}
+function addSlotTypeEditor(){
+  const name=document.getElementById('en-sname').value.trim();if(!name)return;
+  const color=document.getElementById('en-scolor').value;
+  SLOT_TYPES.push({key:'custom_'+Date.now(),label:name,color,bg:color+'22',tc:darken(color)});
+  document.getElementById('en-sname').value='';save();buildSlotLegend();buildSlotTypeGrid();renderEditorSlotTypes();
+}
+function darken(hex){let r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);r=Math.max(0,r-80);g=Math.max(0,g-80);b=Math.max(0,b-80);return '#'+[r,g,b].map(x=>x.toString(16).padStart(2,'0')).join('');}
+
+// ════════════════════════════════════════════
+//  LANCEMENT
+// ════════════════════════════════════════════
+load();
+init();
+</script>
+</body>
+</html>
